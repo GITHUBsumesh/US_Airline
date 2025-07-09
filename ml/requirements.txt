@@ -12,5 +12,9 @@ fastapi
 uvicorn
 python-multipart
 setuptools==68.0.0
+psycopg2
+SQLAlchemy
 
-## -e .
+# -e .
+
+# uncomment at end of project

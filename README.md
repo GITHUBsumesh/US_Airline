@@ -4,6 +4,7 @@
 
 ## 📁 Project Structure
 
+```
 US_Airline/
 ├── backend/         # FastAPI application for serving ML predictions via REST API
 ├── docker/          # Dockerfiles and Docker Compose for all services
@@ -11,5 +12,8 @@ US_Airline/
 ├── ml/              # Training, evaluation, model selection, and inference logic
 ├── prisma-db/       # PostgreSQL database schema managed via Prisma ORM
 └── README.md
+```
 
 ## 🧭 Getting Started
+
+
