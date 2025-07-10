@@ -1,2 +1,4 @@
 .env
 logs/
+Artifacts/
+__pycache__/

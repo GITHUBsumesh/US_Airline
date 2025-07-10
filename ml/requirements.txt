@@ -1,9 +1,7 @@
 python-dotenv
 pandas
 numpy
-pymongo
 certifi
-pymongo[srv]==3.6
 scikit-learn
 mlflow==1.30.0
 pyaml
@@ -13,7 +11,18 @@ uvicorn
 python-multipart
 setuptools==68.0.0
 psycopg2
-SQLAlchemy
+ipykernel
+matplotlib
+sqlalchemy
+psycopg2-binary
+pydantic
+asyncpg
+xgboost
+catboost
+lightgbm
+tensorflow==2.10
+keras==2.10.0
+scikeras==0.11.0
 
 # -e .
 

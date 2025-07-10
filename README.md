@@ -1,6 +1,9 @@
 # ✈️ US Airline Delay Prediction — MLOps Project
+
 ## A complete end-to-end MLOps project that predicts flight delays using structured airline data. This project integrates model training, experiment tracking, database logging, and deployment via modern tooling.
 
+## 🔍 Dataset Represents:
+"Monthly summary of how an airline performed at an airport (in terms of delays and causes)"
 
 ## 📁 Project Structure
 

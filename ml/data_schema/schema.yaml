@@ -1,0 +1,48 @@
+columns:
+- year: int64
+- month: int64
+- carrier: object
+- carrier_name: object
+- airport: object
+- airport_name: object
+- arr_flights: float64
+- arr_del15: float64
+- carrier_ct: float64
+- weather_ct: float64
+- nas_ct: float64
+- security_ct: float64
+- late_aircraft_ct: float64
+- arr_cancelled: float64
+- arr_diverted: float64
+- arr_delay: float64
+- carrier_delay: float64
+- weather_delay: float64
+- nas_delay: float64
+- security_delay: float64
+- late_aircraft_delay: float64
+
+numerical_columns:
+- year
+- month
+- arr_flights
+- arr_del15
+- carrier_ct
+- weather_ct
+- nas_ct
+- security_ct
+- late_aircraft_ct
+- arr_cancelled
+- arr_diverted
+- arr_delay
+- carrier_delay
+- weather_delay
+- nas_delay
+- security_delay
+- late_aircraft_delay
+
+categorical_columns:
+- carrier
+- airport
+
+required_columns:
+- 19
