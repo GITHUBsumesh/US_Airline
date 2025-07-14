@@ -20,3 +20,6 @@ US_Airline/
 ## 🧭 Getting Started
 
 
+conda env create -f environment.yaml
+conda activate flight-mlops
+pip freeze > requirements.txt

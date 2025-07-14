@@ -1,3 +1,5 @@
+from ml.src.utils.path_config import ML_ROOT
+
 from src.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact
 from src.entity.config_entity import DataValidationConfig
 from src.exception.exception import AirLineException 
@@ -37,15 +39,6 @@ class DataValidation:
         except Exception as e:
             raise AirLineException(e,sys)
         
-    # def validate_numeric_column(self, dataframe: pd.DataFrame) -> bool:
-    #     try:
-    #         non_numeric_columns = [col for col in dataframe.columns if not pd.api.types.is_numeric_dtype(dataframe[col])]
-    #         if non_numeric_columns:
-    #             logging.info(f"Non-numeric columns found: {non_numeric_columns}")
-    #             return False
-    #         return True
-    #     except Exception as e:
-    #         raise AirLineException(e, sys)
 
     @staticmethod
     def drop_columns(df: pd.DataFrame, drop_cols: list) -> pd.DataFrame:
@@ -102,16 +95,8 @@ class DataValidation:
             if not status:
                 error_message=f"Test dataframe does not contain all columns.\n"   
             
-            ## validate columns are numerix
-
-            # status=self.validate_numeric_column(dataframe=train_dataframe)
-            # if not status:
-            #     error_message=f"Train dataframe contain non numeic columns.\n"
-            # status = self.validate_numeric_column(dataframe=test_dataframe)
-            # if not status:
-            #     error_message=f"Train dataframe contain non numeic columns.\n"
                 
-            ## lets check datadrift
+            ## check datadrift
             
             status=self.detect_dataset_drift(base_df=train_dataframe,current_df=test_dataframe)
             dir_path=os.path.dirname(self.data_validation_config.valid_train_file_path)

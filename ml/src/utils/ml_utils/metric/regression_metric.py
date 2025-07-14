@@ -1,3 +1,5 @@
+from ml.src.utils.path_config import ML_ROOT
+
 from src.exception.exception import AirLineException
 from src.logging.logger import logging
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score

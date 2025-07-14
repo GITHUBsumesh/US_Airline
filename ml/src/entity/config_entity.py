@@ -1,5 +1,7 @@
 from datetime import datetime
 import os
+from ml.src.utils.path_config import ML_ROOT
+
 from src.constants import training_pipeline
 from typing import Dict
 

@@ -1,0 +1,27 @@
+python-dotenv
+pandas
+numpy
+certifi
+scikit-learn
+mlflow==1.30.0
+pyaml
+dagshub
+fastapi
+uvicorn
+python-multipart
+setuptools==68.0.0
+psycopg2
+ipykernel
+matplotlib
+sqlalchemy
+psycopg2-binary
+pydantic
+asyncpg
+xgboost
+catboost
+lightgbm
+tensorflow==2.10
+keras==2.10.0
+scikeras==0.11.0
+
+# -e .

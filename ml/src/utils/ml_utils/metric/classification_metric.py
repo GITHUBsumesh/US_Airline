@@ -1,3 +1,5 @@
+from ml.src.utils.path_config import ML_ROOT
+
 from src.entity.artifact_entity import ClassificationMetricArtifact
 from src.exception.exception import AirLineException
 from sklearn.metrics import f1_score,precision_score,recall_score

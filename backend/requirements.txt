@@ -1,3 +1,21 @@
 fastapi
-uvicorn
-sqlalchemy==2.0.41
+uvicorn[standard]
+
+# Templating
+jinja2
+
+# Async PostgreSQL + ORM
+sqlalchemy[asyncio]
+asyncpg
+
+# Data and file handling
+pandas
+python-multipart # for file upload
+python-dotenv
+
+# # For loading ML models
+# joblib==1.4.2  
+
+# Optional: error tracing/logging
+loguru
+asyncpg

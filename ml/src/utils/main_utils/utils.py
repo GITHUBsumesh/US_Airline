@@ -1,9 +1,12 @@
 import yaml
+from ml.src.utils.path_config import ML_ROOT
+
 from src.exception.exception import AirLineException
 from src.logging.logger import logging
 import os,sys
 import numpy as np
 #import dill
+import traceback
 import pickle
 from typing import Dict
 from sklearn.model_selection import RepeatedKFold, RandomizedSearchCV
@@ -85,7 +88,6 @@ def evaluate_models(X_train, y_train, X_test, y_test, models: Dict[str, object],
         try:
             logging.info(f"Evaluating model: {model_name}")
             start_time = time.time()
-
             if model_name == "catboost":
                 train_pool = Pool(X_train, y_train)
                 test_pool = Pool(X_test, y_test)
@@ -120,7 +122,7 @@ def evaluate_models(X_train, y_train, X_test, y_test, models: Dict[str, object],
             report[model_name] = test_score
 
         except Exception as e:
-            logging.error(f"Failed to evaluate {model_name}: {str(e)}")
+            logging.error(f"Failed to evaluate {model_name}: {str(e)} {traceback.format_exc()}")
             continue
 
     # Save CV report

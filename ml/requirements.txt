@@ -23,7 +23,3 @@ lightgbm
 tensorflow==2.10
 keras==2.10.0
 scikeras==0.11.0
-
-# -e .
-
-# uncomment at end of project

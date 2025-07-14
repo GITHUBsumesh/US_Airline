@@ -1,3 +1,7 @@
 {
-    "makefile.configureOnOpen": true
+    "makefile.configureOnOpen": true,
+    "editor.codeActionsOnSave": {
+
+    },
+    "python.envFile": "${workspaceFolder}/.env"
 }
