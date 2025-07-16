@@ -59,6 +59,12 @@ Data Transformation related constant start with DATA_TRANSFORMATION VAR NAME
 DATA_TRANSFORMATION_DIR_NAME: str = "data_transformation"
 DATA_TRANSFORMATION_TRANSFORMED_DATA_DIR: str = "transformed"
 DATA_TRANSFORMATION_TRANSFORMED_OBJECT_DIR: str = "transformed_objects"
+OHE_MODELS = ["linear", "ridge", "lasso", "knn", "svr", "dnn"]
+ORDINAL_MODELS = ["rf", "extratrees", "xgb", "lgbm", "gbr"]
+RAW_MODELS = ["catboost"]
+SKIP_SCALING_MODELS = ["rf", "extratrees", "catboost"]
+ALL_MODELS = OHE_MODELS + ORDINAL_MODELS + RAW_MODELS
+
 
 ## simple imputer to replace nan values (numerical )
 DATA_TRANSFORMATION_NUMERIC_IMPUTER_PARAMS: dict = {

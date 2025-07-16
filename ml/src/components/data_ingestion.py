@@ -1,7 +1,7 @@
 from ml.src.utils.path_config import ML_ROOT
 from src.exception.exception import AirLineException
 from src.logging.logger import logging
-from src.constants.training_pipeline import DATA_INGESTION_COLLECTION_NAME
+from src.constants.training_pipeline import DATA_INGESTION_COLLECTION_NAME,TARGET_COLUMN
 
 ## configuration of the Data Ingestion Config
 import psycopg2
@@ -28,9 +28,10 @@ class DataIngestion:
         
         
 
-    def read_postgres_fast_exclude_id(self,table_name):
+    def read_postgres_fast_exclude_id(self, table_name):
         """
-        Read data from postgres database excluding the 'id' column.
+        Read data from postgres database excluding the 'id' column,
+        and only include rows where arr_del15 is not null.
         """
         try:
             conn = psycopg2.connect(DATABASE_URL, sslmode='require')
@@ -48,22 +49,29 @@ class DataIngestion:
             columns = [row[0] for row in cur.fetchall()]
             column_list = ', '.join(columns)
 
-            # COPY selected columns only
-            copy_sql = f'COPY (SELECT {column_list} FROM "{table_name}") TO STDOUT WITH CSV HEADER'
+            # ✅ Add WHERE condition for arr_del15 IS NOT NULL
+            copy_sql = f'''
+                COPY (
+                    SELECT {column_list}
+                    FROM "{table_name}"
+                    WHERE "{TARGET_COLUMN}" IS NOT NULL
+                    LIMIT 1000
+                ) TO STDOUT WITH CSV HEADER
+            '''
             cur.copy_expert(copy_sql, buffer)
             buffer.seek(0)
 
             df = pd.read_csv(buffer)
-            print(f"✅ Read {len(df)} rows from '{table_name}' (excluding 'id')")
+            print(f"✅ Read {len(df)} rows from '{table_name}' (excluding 'id', arr_del15 != NULL)")
             return df
 
         except Exception as e:
-            print(f"[DATA_INGESTION ERROR] {e}") 
-            raise AirLineException(e,sys)
+            print(f"[DATA_INGESTION ERROR] {e}")
+            raise AirLineException(e, sys)
         finally:
             cur.close()
             conn.close()
-        
+   
     def export_data_into_feature_store(self,dataframe: pd.DataFrame):
         try:
             feature_store_file_path=self.data_ingestion_config.feature_store_file_path

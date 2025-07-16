@@ -51,16 +51,7 @@ class DataValidationConfig:
             training_pipeline.DATA_VALIDATION_DRIFT_REPORT_FILE_NAME,
         )
 
-# class DataTransformationConfig:
-#      def __init__(self,training_pipeline_config:TrainingPipelineConfig):
-#         self.data_transformation_dir: str = os.path.join( training_pipeline_config.artifact_dir,training_pipeline.DATA_TRANSFORMATION_DIR_NAME )
-#         self.transformed_train_file_path: str = os.path.join( self.data_transformation_dir,training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_DATA_DIR,
-#             training_pipeline.TRAIN_FILE_NAME.replace("csv", "npy"),)
-#         self.transformed_test_file_path: str = os.path.join(self.data_transformation_dir,  training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_DATA_DIR,
-#             training_pipeline.TEST_FILE_NAME.replace("csv", "npy"), )
-#         self.transformed_object_file_path: str = os.path.join( self.data_transformation_dir, training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_OBJECT_DIR,
-#             training_pipeline.PREPROCESSING_OBJECT_FILE_NAME,)
-        
+
 class DataTransformationConfig:
     def __init__(self, training_pipeline_config: TrainingPipelineConfig):
         self.data_transformation_dir: str = os.path.join(
@@ -68,19 +59,24 @@ class DataTransformationConfig:
             training_pipeline.DATA_TRANSFORMATION_DIR_NAME
         )
 
-        self.transformed_train_file_path: str = os.path.join(
+        # Define base path for transformed data
+        transformed_data_dir = os.path.join(
             self.data_transformation_dir,
-            training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_DATA_DIR,
-            training_pipeline.TRAIN_FILE_NAME.replace("csv", "npy")
+            training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_DATA_DIR
         )
 
-        self.transformed_test_file_path: str = os.path.join(
-            self.data_transformation_dir,
-            training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_DATA_DIR,
-            training_pipeline.TEST_FILE_NAME.replace("csv", "npy")
-        )
+        # Create per-model train/test .npy paths
+        self.transformed_train_file_paths: Dict[str, str] = {
+            model: os.path.join(transformed_data_dir,"Train" ,f"{model}_train.npy")
+            for model in training_pipeline.ALL_MODELS
+        }
 
-        # 🔥 Dynamically map model → full preprocessor path
+        self.transformed_test_file_paths: Dict[str, str] = {
+            model: os.path.join(transformed_data_dir, "Test" ,f"{model}_test.npy")
+            for model in training_pipeline.ALL_MODELS
+        }
+
+        # Preprocessor object path for each model
         self.transformed_object_file_paths: Dict[str, str] = {
             model: os.path.join(
                 self.data_transformation_dir,
@@ -89,6 +85,7 @@ class DataTransformationConfig:
             )
             for model, preprocessor_file in training_pipeline.PREPROCESSING_OBJECT_FILE_NAME.items()
         }
+
 class ModelTrainerConfig:
     def __init__(self,training_pipeline_config:TrainingPipelineConfig):
         self.model_trainer_dir: str = os.path.join(

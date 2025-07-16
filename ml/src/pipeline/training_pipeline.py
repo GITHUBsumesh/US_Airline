@@ -65,13 +65,12 @@ class TrainingPipeline:
             data_transformation_config = DataTransformationConfig(training_pipeline_config=self.training_pipeline_config)
             data_transformation = DataTransformation(data_validation_artifact=data_validation_artifact,
             data_transformation_config=data_transformation_config)
-            
             data_transformation_artifact = data_transformation.initiate_data_transformation()
             return data_transformation_artifact
         except Exception as e:
             raise AirLineException(e,sys)
         
-    def start_model_trainer(self,data_transformation_artifact:DataTransformationArtifact)->ModelTrainerArtifact:
+    def start_model_trainer(self,data_transformation_artifact:DataTransformationArtifact,data_validation_artifact:DataValidationArtifact)->ModelTrainerArtifact:
         try:
             self.model_trainer_config: ModelTrainerConfig = ModelTrainerConfig(
                 training_pipeline_config=self.training_pipeline_config
@@ -80,7 +79,9 @@ class TrainingPipeline:
             model_trainer = ModelTrainer(
                 data_transformation_artifact=data_transformation_artifact,
                 model_trainer_config=self.model_trainer_config,
+                data_validation_artifact=data_validation_artifact  # ← fix this line
             )
+
 
             model_trainer_artifact = model_trainer.initiate_model_trainer()
 
@@ -112,7 +113,7 @@ class TrainingPipeline:
             data_ingestion_artifact=self.start_data_ingestion()
             data_validation_artifact=self.start_data_validation(data_ingestion_artifact=data_ingestion_artifact)
             data_transformation_artifact=self.start_data_transformation(data_validation_artifact=data_validation_artifact)
-            model_trainer_artifact=self.start_model_trainer(data_transformation_artifact=data_transformation_artifact)
+            model_trainer_artifact=self.start_model_trainer(data_transformation_artifact=data_transformation_artifact,data_validation_artifact=data_validation_artifact)
             
             # self.sync_artifact_dir_to_s3()
             # self.sync_saved_model_dir_to_s3()

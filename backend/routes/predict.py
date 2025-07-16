@@ -5,7 +5,7 @@ import pandas as pd
 import sys
 import os
 
-from backend.db.async_db import SessionLocal  # ✅ Use sync DB session
+from backend.db.sync_db import SessionLocal  # ✅ Use sync DB session
 from backend.services.predict_service import run_prediction
 
 router = APIRouter()
@@ -41,40 +41,3 @@ def predict(request: Request, file: UploadFile = File(...)):
             "request": request,
             "error": str(e)
         })
-
-# backend/routes/predict.py
-
-# from fastapi import APIRouter, File, UploadFile, Request
-# from fastapi.responses import HTMLResponse
-# from fastapi.templating import Jinja2Templates
-# import pandas as pd
-# import os
-# import sys
-
-# from backend.services.predict_service import run_prediction
-# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
-# router = APIRouter()
-
-# @router.post("/", response_class=HTMLResponse)
-# def predict(request: Request, file: UploadFile = File(...)):
-#     try:
-#         df = pd.read_csv(file.file)
-#         assert isinstance(df, pd.DataFrame)
-
-#         df, html_table = run_prediction(df)
-
-#         os.makedirs("prediction_output", exist_ok=True)
-#         df.to_csv("prediction_output/output.csv", index=False)
-
-#         return templates.TemplateResponse("table.html", {
-#             "request": request,
-#             "table": html_table
-#         })
-
-#     except Exception as e:
-#         print(f"[PREDICT ROUTE ERROR] {e}", file=sys.stderr)
-#         return templates.TemplateResponse("error.html", {
-#             "request": request,
-#             "error": str(e)
-#         })

@@ -18,8 +18,9 @@ class DataValidationArtifact:
 @dataclass
 class DataTransformationArtifact:
     transformed_object_file_paths: Dict[str, str]
-    transformed_train_file_path: str
-    transformed_test_file_path: str
+    transformed_train_file_paths: Dict[str, str]
+    transformed_test_file_paths: Dict[str, str]
+
 
 @dataclass
 class ClassificationMetricArtifact:

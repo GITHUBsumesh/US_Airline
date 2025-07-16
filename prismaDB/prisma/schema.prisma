@@ -8,29 +8,30 @@ datasource db {
 }
 
 model US_Airline {
-  id Int @id @default(autoincrement())
-  year Int
-  month Int
-  carrier String
-  carrier_name String
-  airport String
-  airport_name String
-  arr_flights Float
-  arr_del15 Float
-  carrier_ct Float
-  weather_ct Float
-  nas_ct Float
-  security_ct Float
-  late_aircraft_ct Float
-  arr_cancelled Float
-  arr_diverted Float
-  arr_delay Float
-  carrier_delay Float
-  weather_delay Float
-  nas_delay Float
-  security_delay Float
-  late_aircraft_delay Float
+  id                   Int     @id @default(autoincrement())
+  year                 Int?
+  month                Int?
+  carrier              String?
+  carrier_name         String?
+  airport              String?
+  airport_name         String?
+  arr_flights          Float?
+  arr_del15            Float?
+  carrier_ct           Float?
+  weather_ct           Float?
+  nas_ct               Float?
+  security_ct          Float?
+  late_aircraft_ct     Float?
+  arr_cancelled        Float?
+  arr_diverted         Float?
+  arr_delay            Float?
+  carrier_delay        Float?
+  weather_delay        Float?
+  nas_delay            Float?
+  security_delay       Float?
+  late_aircraft_delay  Float?
 }
+
 
 model Prediction {
   id             Int      @id @default(autoincrement())
