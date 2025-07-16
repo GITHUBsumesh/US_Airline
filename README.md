@@ -1,144 +1,217 @@
 # ✈️ US Airline Delay Prediction — MLOps Project
 
-## A complete end-to-end MLOps project that predicts the number of flight that will be delayed in a month using structured airline data. This project integrates model training, experiment tracking, database logging, and deployment via modern tooling.
+A complete **end-to-end MLOps pipeline** that predicts the number of flight delays in a month using structured airline data. This project integrates data ingestion, model training, hyperparameter tuning, evaluation and experiment tracking (MLflow) following modular and scalable MLOps practices.
 
+---
 
-## 🔍 Dataset Represents:
-"Monthly summary of how an airline performed at an airport (in terms of delays and causes)"
+## 🔍 Dataset Description
+
+> Monthly summary of how each airline performed at a specific airport, capturing delay statistics and their causes.
+
+- **Target Column**: **`arr_del15`** — Number of flights delayed (arrival delay ≥ 15 minutes) for each **carrier-airport pair** in a given **month**.
+
 
 ## 📁 Project Structure
 
 ```
-US_Airline/
-├── backend/         # FastAPI application for serving ML predictions via REST API
-├── docker/          # Dockerfiles and Docker Compose for all services
-├── frontend/        # Streamlit web UI for user interaction and predictions
-├── ml/              # Training, evaluation, model selection, and inference logic
-├── prisma-db/       # PostgreSQL database schema managed via Prisma ORM
+
+US\_Airline/
+├── backend/         # FastAPI application for model serving via REST API
+├── ml/              # Core ML pipeline: training, evaluation, and inference logic
+├── prisma-db/       # PostgreSQL schema managed via Prisma ORM
 └── README.md
+
 ```
+
+---
 
 ## 🧭 Getting Started
 
-clone the repo
-'''
+### 1️⃣ Clone the repository
+
+```bash
 git clone https://github.com/GITHUBsumesh/US_Airline.git
-'''
-clone the environment
-'''
-conda env create -f environment.yaml
-'''
-or 
-create a new env
-'''
-conda create -n flight-full python==3.11 -y
-conda activate flight-mlops
+cd US_Airline
+```
+
+### 2️⃣ Setup the Python environment
+
+```bash
+conda create -n flight-full python=3.11 -y
+conda activate flight-full
 pip install -r requirements.txt
-'''
-start the fastapi server
-'''
+```
+
+Or use the provided YAML:
+
+```bash
+conda env create -f environment.yaml
+conda activate flight-full
+```
+
+### 3️⃣ Start FastAPI server
+
+```bash
 uvicorn backend.app:app --reload
-'''
-for predicting use
-![test data](./ml/test_data/test_data.csv)
+```
 
-## Folder Description
+---
 
-### backend
+### 🧾 Sample Prediction Data
+Use the sample test CSV for predictions:
 
-'''
-backend/
-├── db/             # db config with SQLAlchemy
-├── models/         # models to use postgres db
-├── routes/         # routes for training and prediction
-├── services/       # service files for training and prediction
-|── templates/      # html templates to display the table of prediction or error
-|── utils/          # file to app ml folder path in backend and to use all ml packages inside backend
-'''
+📂[test_data](./ml/test_data/test_data.csv)
 
-### ml
-
-'''
-ml/
-├── src/                # main ml pipeline
-├── data_schema/        # a schema.yaml file of the dataset
-├── dataset/            # contains the dataset
-├── final_model/        # the best model after training
-|── notebooks/          # jupiter notebooks to look how data is present
-|── test_data/          # test data to be used for prediction
-|── prediction_output   # prediction output 
-'''
-
-### prisma_db
-
-'''
-prisma_db
-|── prisma          # schema for db
-'''
-
-## Flow of execution
-
-1. ml/push_data.py    -> pushes the entire raw data(400k rows) into db
-2. backend/train.py   -> triggers the training pipeline
-3. backend/predict.py -> triggers the prediction pipeline
-
-## Detailed Training Pipeline
-
-✅ Step 1: Data Ingestion
- > Data is read from db (where Target Column is not null) and stored in a csv "cleaned flights"
- > DataFrame is split into training and testing in ratio 0.2
- > A Data Ingestion Artifact is created 
-
-✅ Step 2: Data Validation
- > Columns that are not required are removed from test.csv and train.csv 
- > Number of columns are validated
- > [Data Drift](https://www.datacamp.com/tutorial/understanding-data-drift-model-drift) report is created
- > A validated test.csv and train.csv is created
- > A Data Validation Artifact is created 
-
-✅ Step 3: Data Transformation
- > Target Column is dropped from the test.csv and train .csv
- > For every model
-    1.  A preprocessor is created by
-        * Imputing missing rows 
-            - most frequent for categorical columns
-            - mean for numeric columns
-        * Scaling numeric columns only
-            - StandScaler 
-        * Encoding Categorical Columns only
-            - One Hot for carrier
-            - Ordinal for airport
-    2.  Preprocessor is fit and transformed on training data
-        And only tranformed on test data
-    3.  Two Numpy arrays are created 
-            train_arr =  transformed train + Targer Column
-            test_arr =  transformed test + Targer Column
-    4.  A Data Transformation Artifact is created 
-
-✅ Step 4: Model Training & Evaluation
- >  Every model is trained on different hyperparameters
-    1. Catboost
-        - As it is requires raw data, it is evaluated on validation files
-        - Then fitted directly
-    2. DNN
-        - RepeatedKFold
-    3. Linear
-        - Directly fitted
-    4. Others
-        - RandomizedSearchCV to get best model then fitted on that model
- >  r2 score is calculated for all models and a report is made
- >  Highest r2 score is choosen as the best model
- >  MLFlow tracks the test metric of the best model
- >  Prediction is made and the best model and its preprocessor is saved in '/final_model'
- >  A Model Trainer Artifact is created 
+---
 
 
+## 📝 Folder Breakdown
 
+### 📦 `backend/` – API Layer
 
-## Detailed Prediction Pipeline
+```text
+├── db/             # SQLAlchemy configuration
+├── models/         # Pydantic and DB models
+├── routes/         # Train and Predict endpoints
+├── services/       # Business logic for pipeline handling
+├── templates/      # Jinja2 HTML templates
+└── utils/          # Adds ml path to sys, for backend access
+```
 
-1.  The input csv is converted to pandas dataframe
-2.  The final preprocessor and model objects are loaded into an AirLineModel class
-3.  The predict function used the preprocessor to transform the data frame and then predict
-4.  The prediction is stored in db and also in a csv file
+### 🧠 `ml/` – Machine Learning Core
 
+```text
+├── src/                # Component-wise pipeline implementation
+├── data_schema/        # Schema for input dataset
+├── dataset/            # Raw dataset source
+├── final_model/        # Best trained model + preprocessor
+├── notebooks/          # EDA and development notebooks
+├── test_data/          # Sample test file for predictions
+└── prediction_output/  # CSV output of predictions
+```
+
+### 🗃️ `prisma-db/` – PostgreSQL Integration
+
+```text
+├── prisma/             # DB schema and setup
+```
+
+---
+
+## 🚀 API Endpoints
+
+| Endpoint        | Method | Description                                     |
+| --------------- | ------ | ----------------------------------------------- |
+| `/api/train/`   | `GET`  | Triggers full training pipeline                 |
+| `/api/predict/` | `POST` | Upload test `.csv` and return delay predictions |
+
+---
+
+## 🔁 Pipeline Flow
+
+### 🔹 Step 1: Data Ingestion
+
+* Reads cleaned rows from PostgreSQL DB (excluding null `arr_del15`)
+* Splits into `train.csv` and `test.csv` (80/20)
+* Saves Data Ingestion Artifact
+
+### 🔹 Step 2: Data Validation
+
+* Drops irrelevant columns
+* Validates schema and shape
+* Generates **Data Drift Report**
+* Saves validated CSVs and artifact
+
+### 🔹 Step 3: Data Transformation
+
+* Drops `arr_del15` during transformation
+* For each model:
+
+  * Builds a tailored `ColumnTransformer`
+
+    * Imputes: Mean (numeric), Most Frequent (categorical)
+    * Scales: `StandardScaler` for applicable models
+    * Encodes:
+
+      * One-Hot: `"carrier"` (21 unique values)
+      * Ordinal: `"airport"` (353 unique values)
+  * Saves transformed NumPy arrays and preprocessor
+
+### 🔹 Step 4: Model Trainer
+
+* Supports multiple regressors:
+
+  * Linear, Ridge, Lasso, KNN, SVR, RandomForest, ExtraTrees, XGBoost, LightGBM, GradientBoosting, DNN, CatBoost
+* Model-specific processing:
+
+  * `CatBoost`: Works on raw strings, no encoding/scaling
+  * `DNN`: Uses `RepeatedKFold`, early stopping
+  * Others: Hyperparameter tuning via `RandomizedSearchCV`
+* R² Score is used to evaluate each model
+* Best model selected and retrained on full train set
+* Model + preprocessor saved under `/final_model/`
+* Metrics and model performance logged to Dagshub
+
+---
+
+## 🧠 Prediction Pipeline
+
+1. Loads trained model and preprocessor (`final_model/`)
+2. Accepts input CSV via API or CLI
+3. Transforms the data using the saved pipeline
+4. Returns predictions and logs them to DB + CSV
+
+---
+
+## 🛠️ Execution Flow
+
+| Script/File           | Purpose                                |
+|-----------------------|----------------------------------------|
+| `ml/push_data.py`     | Loads complete raw dataset into DB     |
+| `backend/train.py`    | Triggers end-to-end training pipeline  |
+| `backend/predict.py`  | Triggers prediction pipeline           |
+
+---
+## 🧪 Technologies Used
+
+- **ML/DL**: Scikit-Learn, CatBoost, XGBoost, Keras
+- **MLOps**: MLflow, joblib, YAML-based config, Dagshub
+- **Database**: PostgreSQL + Prisma ORM
+- **Serving**: FastAPI (REST)
+- **Logging**: Python logging + YAML reporting
+
+---
+
+## 🚧 Future Improvements
+
+The following features are planned and under development:
+
+* 🐳 **Dockerization**
+
+  * Dockerize the entire application stack (FastAPI + PostgreSQL + Streamlit + MLflow)
+  * Provide a `docker-compose.yml` for local setup
+
+* 🌐 **Streamlit Web UI**
+
+  * Interactive front-end for model training and CSV-based prediction
+  * Include visualizations for model performance and data exploration
+
+---
+
+## ✅ How to Contribute
+
+* [ ] Fork the repository
+* [ ] Open issues for bugs or enhancements
+* [ ] Submit PRs with clear commits and test cases
+
+---
+
+## 📌 Author
+
+**Sumesh**
+*Engineering Student | MLOps & Fullstack Enthusiast*
+
+📧 [LinkedIn](https://linkedin.com/in/sumesh-ranjan-majee-yokoso)
+📂 [GitHub](https://github.com/GITHUBsumesh)
+
+---
